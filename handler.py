@@ -157,7 +157,12 @@ def process_data(input_data: dict) -> dict:
             "lock_line": LOCK[:80],
         }
     scene = str(input_data.get("prompt") or "").strip()
-    still = _decode_image(input_data)
+    if not scene:
+        return {"error": "prompt is required"}
+    try:
+        still = _decode_image(input_data)
+    except (ValueError, OSError) as e:
+        return {"error": str(e)}
     width, height = resolve_size(
         input_data.get("width"),
         input_data.get("height"),
@@ -201,6 +206,7 @@ def handler(event):
     return process_data(input_data)
 
 
-# Load Wan before the worker accepts jobs. This time is the cold start.
+# Load Wan outside the handler so each job does not reload the weights.
 load_pipeline()
-runpod.serverless.start({"handler": handler})
+if __name__ == "__main__":
+    runpod.serverless.start({"handler": handler})

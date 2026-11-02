@@ -4,6 +4,8 @@
 
 Image-to-video for Tiny Tales (Milo, Rosie, Ollie). Send a still from ImageGen and a short motion line. The worker keeps the faces and outfits locked to that picture.
 
+`handler.py` is a queue-based [handler function](https://docs.runpod.io/serverless/overview#handler-functions): it reads `event["input"]`, returns a dict, and starts with `runpod.serverless.start({"handler": handler})`.
+
 ## Model
 
 **Wan 2.2 TI2V-5B** (`Wan-AI/Wan2.2-TI2V-5B-Diffusers`).
