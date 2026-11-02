@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "milo_rosie_ollie_clip",
+      "input": {
+        "prompt": "gentle smile, leaves drifting, camera still",
+        "preset": "draft",
+        "seconds": 1,
+        "seed": 1,
+        "steps": 4,
+        "image_b64": "iVBORw0KGgoAAAANSUhEUgAAAEAAAAAwCAIAAAAuKetIAAAAY0lEQVR4nO3PwQkAIBDAsBvRtyM6pUP4CEKhA6Szzv664YIGtKABLWhACxrQgga0oAEtaEALGtCCBrSgAS1oQAsa0IIGtKABLWhACxrQgga0oAEtaEALGtCCBrSgAS1oQAseuxKx8OLAnwX1AAAAAElFTkSuQmCC"
+      },
+      "timeout": 900000
+    }
+  ],
+  "config": {
+    "gpuTypeId": "NVIDIA GeForce RTX 4090",
+    "gpuCount": 1,
+    "env": [
+      {
+        "key": "WARMUP",
+        "value": "0"
+      }
+    ],
+    "allowedCudaVersions": [
+      "13.2",
+      "13.1",
+      "13.0",
+      "12.9",
+      "12.8"
+    ]
+  }
+}
