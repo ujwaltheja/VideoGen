@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Smoke-test a RunPod Hub pod (local serverless wrapper on port 80).
+"""Smoke-test a RunPod Hub **Pod** via the port-80 HTTP proxy (not api.runpod.ai Serverless).
+
+The pod runs local-sls-server + handler.py; you POST to the proxy URL, not VIDEO_EP.
 
   export RUNPOD_API_KEY=...
-  python3 test_pod.py nnfcl8uji0ki0e
+  python3 test_pod.py u2hd90hivscncl
 """
 from __future__ import annotations
 

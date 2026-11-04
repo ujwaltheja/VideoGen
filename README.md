@@ -4,6 +4,8 @@
 
 Image-to-video for Tiny Tales (Milo, Rosie, Ollie). Send a still from ImageGen and a short motion line. The worker keeps the faces and outfits locked to that picture.
 
+**New pipelines (FastH3-Omni + LTX-2.5):** see [`pipelines/README.md`](pipelines/README.md) — separate Comfy serverless stacks, licenses, and batch scripts for Sweetville **full_visual** clips.
+
 `handler.py` is a queue-based [handler function](https://docs.runpod.io/serverless/overview#handler-functions): it reads `event["input"]`, returns a dict, and starts with `runpod.serverless.start({"handler": handler})`.
 
 ## Model
@@ -19,7 +21,26 @@ Image-to-video for Tiny Tales (Milo, Rosie, Ollie). Send a still from ImageGen a
 
 Same GPU class as ImageGen. Draft 832×480 is the ImageGen draft still, which is what Kids Video Studio already sends.
 
-## Deploy
+## Hub Pod (not Serverless)
+
+Deploy the Hub listing as a **Pod** (always-on GPU). That is **not** a RunPod Serverless endpoint on `api.runpod.ai`.
+
+The container still runs `runpod.serverless.start` behind **`local-sls-server`** on port **80**, so the HTTP shape matches Serverless **`runsync`**, but you call the **pod proxy**, not `VIDEO_EP`.
+
+| | Pod | Serverless endpoint |
+|---|---|---|
+| Base URL | `https://{pod_id}-80.proxy.runpod.net/v2/LOCAL` | `https://api.runpod.ai/v2/{endpoint_id}` |
+| Client | `test_pod.py` (or your app POSTing to the proxy) | `client.py` + `VIDEO_EP` |
+| Billing | GPU hours while the pod runs | Per job / idle workers |
+
+```bash
+export RUNPOD_API_KEY="..."
+python3 test_pod.py u2hd90hivscncl
+```
+
+Health: `GET …/v2/LOCAL/health` (use `User-Agent: curl/8.0` from Python; Cloudflare blocks default `urllib`). Clips: `POST …/v2/LOCAL/runsync` with the same `input` JSON as below. Keep `MODEL_ID=Wan-AI/Wan2.2-TI2V-5B-Diffusers` in pod env so offline weights resolve.
+
+## Deploy (Serverless endpoint)
 
 GPU: **RTX 4090** first, then **5090**, then L40S / 6000 Ada / A40. Container disk **80 GB** (the image holds Wan + UMT5). Workers **min 0, max 1**, idle timeout **5 s**, FlashBoot **on**. CUDA **12.8 and 13.x** (not 12.0–12.7). Same supply trap as ImageGen: 4090s with capacity sit on **13.2** hosts today. A 12.8-only list returns supply constraints, then Runpod tries B300 MIG / PRO 4500, which this worker must not use.
 

@@ -111,10 +111,13 @@ def _decode_image(input_data: dict) -> Image.Image:
     raw = input_data.get("image_b64") or input_data.get("image_base64") or input_data.get("image")
     if not raw or not isinstance(raw, str):
         raise ValueError("image_b64 is required")
-    if raw.startswith(("http://", "https://", "/")):
+    if raw.startswith(("http://", "https://")):
         raise ValueError("send the still as image_b64, not a path or URL")
     if raw.startswith("data:"):
         raw = raw.split(",", 1)[1]
+    # JPEG base64 often starts with "/9j/" — not a filesystem path.
+    if raw.startswith("/") and not raw.startswith("/9j/"):
+        raise ValueError("send the still as image_b64, not a path or URL")
     blob = base64.b64decode(raw)
     return Image.open(io.BytesIO(blob)).convert("RGB")
 

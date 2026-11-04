@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .venv/
+pipelines/**/config.env
+pipelines/**/workflows/*.json
+!pipelines/**/workflows/.gitkeep
