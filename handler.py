@@ -30,10 +30,25 @@ from prompt_build import (
     resolve_size,
 )
 
-MODEL_ID = os.environ.get("MODEL_ID", "Wan-AI/Wan2.2-TI2V-5B-Diffusers")
+DEFAULT_MODEL_ID = "Wan-AI/Wan2.2-TI2V-5B-Diffusers"
 OFFLOAD = os.environ.get("OFFLOAD", "t5").strip().lower()
 
 pipe = None
+
+
+def resolve_model_id() -> str:
+    """Map Hub/UI ids to the snapshot baked into the image (HF cache is case-sensitive)."""
+    raw = os.environ.get("MODEL_ID", DEFAULT_MODEL_ID).strip() or DEFAULT_MODEL_ID
+    key = raw.lower().replace("_", "-")
+    if key in {
+        "wan-ai/wan2.2-ti2v-5b-diffusers",
+        "wan-ai/wan2.2-ti2v-5b",
+    }:
+        return DEFAULT_MODEL_ID
+    return raw
+
+
+MODEL_ID = resolve_model_id()
 
 
 def load_pipeline() -> None:
