@@ -19,16 +19,21 @@ TEST_IMAGE_B64 = (
 )
 
 
+def _headers(key: str) -> dict[str, str]:
+    return {
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "User-Agent": "curl/8.0",
+    }
+
+
 def _req(method: str, url: str, key: str, body: dict | None = None, timeout: int = 900) -> dict:
     data = None if body is None else json.dumps(body).encode()
     req = urllib.request.Request(
         url,
         data=data,
         method=method,
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-        },
+        headers=_headers(key),
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return json.loads(resp.read().decode())
@@ -38,7 +43,11 @@ def wait_proxy(base: str, key: str, attempts: int = 60, sleep_s: int = 10) -> No
     health = f"{base}/health"
     for i in range(1, attempts + 1):
         try:
-            code = urllib.request.urlopen(urllib.request.Request(health), timeout=15).getcode()
+            req = urllib.request.Request(
+                health,
+                headers={"User-Agent": "curl/8.0"},
+            )
+            code = urllib.request.urlopen(req, timeout=15).getcode()
             if code == 200:
                 print(f"proxy ready after {i} attempt(s)", file=sys.stderr)
                 return

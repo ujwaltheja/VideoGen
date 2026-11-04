@@ -26,7 +26,11 @@ def _req(method: str, url: str, key: str, body: dict | None = None) -> dict:
         url,
         data=data,
         method=method,
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json",
+            "User-Agent": "curl/8.0",
+        },
     )
     with urllib.request.urlopen(req, timeout=300) as resp:
         return json.loads(resp.read().decode())
