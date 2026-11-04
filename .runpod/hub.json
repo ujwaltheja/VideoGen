@@ -1,6 +1,6 @@
 {
   "title": "VideoGen",
-  "description": "Fast preschool image-to-video of Milo, Rosie, and Ollie. Wan 2.2 TI2V-5B, 720P at 24 fps, one still per clip.",
+  "description": "Fast preschool image-to-video for Milo, Rosie, Ollie. Wan 2.2 TI2V-5B, 720P 24fps - optimized for L40S 48GB.",
   "type": "serverless",
   "category": "video",
   "config": {
